@@ -30,7 +30,6 @@ public class ApplicationRunner {
 
         var connectionPool = context.getBean("pool1", ConnectionPool.class);
 
-        System.out.println(connectionPool.getProperties());
 //        System.out.println(context.getBean("pool2"));
     }
 }

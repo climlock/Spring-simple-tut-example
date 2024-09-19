@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/spring-context-4.0-xsd">
 
-    <bean id="pool1" class="com.one.spring.database.pool.ConnectionPool">
-        <constructor-arg index="0" type="java.lang.String" value="postgres"/>
-        <constructor-arg index="1" type="java.lang.Integer" value="10"/>
+<context:property-placeholder location="application.properties"/>
+<!--    То что выше автоматически создает bean ниже  -->
+<!--    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">-->
+<!--        <property name="locations" value="application.properties"/>-->
+<!--    </bean>-->
+
+
+
+    <bean id="driver" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${db.driver}"/>
+    </bean>
+
+    <bean id="pool1" class="com.one.spring.database.pool.ConnectionPool"
+          init-method="init"
+          destroy-method="destroy">
+            <constructor-arg name="username" type="java.lang.String" value="${db.username}"/>
+        <constructor-arg name="poolSize" type="java.lang.Integer" value="${db.pool.size}"/>
         <constructor-arg name="args">
             <list>
                 <value>arg1=value1</value>
@@ -22,6 +40,9 @@
             <map>
                 <entry key="url" value="postgresurlPROPERTIES"/>
                 <entry key="password" value="1234PROPERTIES"/>
+                <entry key="test" value="#{driver.length() > 10}"/>
+                <entry key="test" value="#{driver.length() > T(Math).random() * 10}"/>
+                <entry key="host" value="#{'${db.hosts}'.split(',')}"/>
             </map>
         </property>
     </bean>
