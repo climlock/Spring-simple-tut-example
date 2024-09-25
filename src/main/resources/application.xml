@@ -5,13 +5,23 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd
                             http://www.springframework.org/schema/context
-                            http://www.springframework.org/schema/spring-context-4.0-xsd">
+                            http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-<context:property-placeholder location="application.properties"/>
-<!--    То что выше автоматически создает bean ниже  -->
+    <bean class="com.one.spring.bfpp.LogBeanFactoryPostProcessor"/>
+    <bean class="com.one.spring.bfpp.VerifyPropertyFactoryPostProcessor"/>
+
+
+    <context:annotation-config/>
+    <context:property-placeholder location="application.properties"/>
+
+    <bean class="com.one.spring.bpp.InjectBeanPostProcessor"/>
+    <bean class="com.one.spring.bpp.TransactionBeanPostProcessor"/>
+    <bean class="com.one.spring.bpp.AuditingBeanPostProcessor"/>
+<!--    То что выше автоматически создает beans ниже  -->
 <!--    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">-->
 <!--        <property name="locations" value="application.properties"/>-->
 <!--    </bean>-->
+<!--    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>-->
 
 
 
@@ -19,9 +29,9 @@
         <constructor-arg type="java.lang.String" value="${db.driver}"/>
     </bean>
 
-    <bean id="pool1" class="com.one.spring.database.pool.ConnectionPool"
-          init-method="init"
-          destroy-method="destroy">
+    <bean id="pool1" class="com.one.spring.database.pool.ConnectionPool">
+<!--          init-method="init"-->
+<!--          destroy-method="destroy">-->
             <constructor-arg name="username" type="java.lang.String" value="${db.username}"/>
         <constructor-arg name="poolSize" type="java.lang.Integer" value="${db.pool.size}"/>
         <constructor-arg name="args">
@@ -43,8 +53,14 @@
                 <entry key="test" value="#{driver.length() > 10}"/>
                 <entry key="test" value="#{driver.length() > T(Math).random() * 10}"/>
                 <entry key="host" value="#{'${db.hosts}'.split(',')}"/>
+<!--                <entry key="currantUser" value="#{systemProperties[user.name]}"/>-->
             </map>
         </property>
     </bean>
+
+    <bean id="companyRepository" class="com.one.spring.database.repository.CompanyRepository"/>
+
+
+
 <!--    <bean id="pool2" class="com.one.spring.database.pool.ConnectionPool"/>-->
 </beans>
